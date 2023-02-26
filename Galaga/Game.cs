@@ -66,6 +66,12 @@ namespace Galaga
         }
         private void KeyHandler(KeyboardAction action, KeyboardKey key) {
             // TODO: Switch on KeyBoardAction and call proper method
+            if (action == KeyboardAction.KeyPress) {
+                KeyPress(key);
+            }
+            else {
+                KeyRelease(key);
+            }
         }
         public void ProcessEvent(GameEvent gameEvent) {
             // Leave this empty for now

@@ -19,14 +19,24 @@ public class Player {
             entity.RenderEntity();
         }
 
-
         public void Move() {
-            // TODO: Finish this, so it uses the right max and min for both X and Y
-            if (shape.Position.X >= 0 && shape.Position.X <= 100) {
+            float min = 0.0f;
+            // NOTE: Seems like the shape has position in its left corner, so 0.9 works best
+            float max = 0.9f;
+            if (shape.Position.X > min && shape.Position.X < max) {
                 shape.Move();
+            }
+            else {
+                if (shape.Position.X <= min) {
+                    shape.MoveX(0.01f);
+                }
+                else if (shape.Position.X >= max) {
+                    shape.MoveX(-0.01f);
+                }
             }
             // TODO: move the shape and guard against the window borders
         }
+
         public void SetMoveLeft(bool val) {
             if (val) {
                 moveLeft = -MOVEMENT_SPEED;
