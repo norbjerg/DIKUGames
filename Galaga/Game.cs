@@ -19,13 +19,13 @@ namespace Galaga
 
         public override void Render()
         {
-            //TODO: Render Game Entitties
-            throw new System.NotImplementedException("Galaga game has nothing to render yet.");
+            window.Clear();
+            player.Render();
         }
 
         public override void Update()
         {
-            throw new System.NotImplementedException("Galaga game has no entities to update yet.");
+            window.PollEvents();
         }
     }
 }
