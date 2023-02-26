@@ -1,25 +1,76 @@
+using System.IO;
+using DIKUArcade.Entities;
+using DIKUArcade.Graphics;
+using DIKUArcade.Math;
 using DIKUArcade;
 using DIKUArcade.GUI;
+using DIKUArcade.Events;
 using DIKUArcade.Input;
+using System.Collections.Generic;
 
 namespace Galaga
 {
-    public class Game : DIKUGame
+    public class Game : DIKUGame, IGameEventProcessor
     {
-        public Game(WindowArgs windowArgs) : base(windowArgs) {
-            // TODO: Set key event handler (inherited window field of DIKUGame class)
-        }
+        private Player player;
+        private GameEventBus eventBus;
 
-        //private void KeyHandler(KeyboardAction action, KeyboardKey key) {} // TODO: Outcomment
+        public Game(WindowArgs windowArgs) : base(windowArgs) {
+            player = new Player(
+                new DynamicShape(new Vec2F(0.45f, 0.1f), new Vec2F(0.1f, 0.1f)),
+                new Image(Path.Combine("Assets", "Images", "Player.png")));
+            eventBus = new GameEventBus();
+            eventBus.InitializeEventBus(new List<GameEventType> { GameEventType.InputEvent });
+            window.SetKeyEventHandler(KeyHandler);
+            eventBus.Subscribe(GameEventType.InputEvent, this);
+        }
 
         public override void Render()
         {
-            throw new System.NotImplementedException("Galaga game has nothing to render yet.");
+            window.Clear();
+            player.Render();
         }
 
         public override void Update()
         {
-            throw new System.NotImplementedException("Galaga game has no entities to update yet.");
+            window.PollEvents();
+            eventBus.ProcessEventsSequentially();
+            player.Move();
+        }
+
+        private void KeyPress(KeyboardKey key) {
+            switch (key) {
+                case KeyboardKey.Escape:
+                    eventBus.InitializeEventBus(new List<GameEventType> { GameEventType.WindowEvent });
+                    break;
+                case KeyboardKey.Left:
+                    player.SetMoveLeft(true);
+                    break;
+                case KeyboardKey.Right:
+                    player.SetMoveRight(true);
+                    break;
+            }
+        }
+        private void KeyRelease(KeyboardKey key) {
+            switch (key) {
+                case KeyboardKey.Left:
+                    player.SetMoveLeft(false);
+                    break;
+                case KeyboardKey.Right:
+                    player.SetMoveRight(false);
+                    break;
+            }
+        }
+        private void KeyHandler(KeyboardAction action, KeyboardKey key) {
+            if (action == KeyboardAction.KeyPress) {
+                KeyPress(key);
+            }
+            else {
+                KeyRelease(key);
+            }
+        }
+        public void ProcessEvent(GameEvent gameEvent) {
+            // Leave this empty for now
         }
     }
 }
