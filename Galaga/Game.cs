@@ -39,8 +39,6 @@ namespace Galaga
         }
 
         private void KeyPress(KeyboardKey key) {
-            // TODO: Close window if escape is pressed
-            // TODO: switch on key string and set the player's move direction
             switch (key) {
                 case KeyboardKey.Escape:
                     eventBus.InitializeEventBus(new List<GameEventType> { GameEventType.WindowEvent });
@@ -54,7 +52,6 @@ namespace Galaga
             }
         }
         private void KeyRelease(KeyboardKey key) {
-            // TODO: switch on key string and disable the player's move direction
             switch (key) {
                 case KeyboardKey.Left:
                     player.SetMoveLeft(false);
@@ -65,7 +62,6 @@ namespace Galaga
             }
         }
         private void KeyHandler(KeyboardAction action, KeyboardKey key) {
-            // TODO: Switch on KeyBoardAction and call proper method
             if (action == KeyboardAction.KeyPress) {
                 KeyPress(key);
             }

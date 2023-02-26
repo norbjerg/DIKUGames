@@ -34,7 +34,6 @@ public class Player {
                     shape.MoveX(-0.01f);
                 }
             }
-            // TODO: move the shape and guard against the window borders
         }
 
         public void SetMoveLeft(bool val) {
@@ -45,7 +44,6 @@ public class Player {
                 moveLeft = 0;
             }
             UpdateDirection();
-            // TODO:set moveLeft appropriately and call UpdateDirection()
         }
         public void SetMoveRight(bool val) {
             if (val) {
@@ -55,7 +53,6 @@ public class Player {
                 moveLeft = 0;
             }
             UpdateDirection();
-            // TODO:set moveRight appropriately and call UpdateDirection()
         }
 
         private void UpdateDirection() {
