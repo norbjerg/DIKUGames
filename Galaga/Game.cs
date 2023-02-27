@@ -97,7 +97,7 @@ namespace Galaga
 
         private void IterateShots() {
             playerShots.Iterate(shot => {
-                shot.Shape.MoveY(shot.Direction.Y);
+                shot.Shape.MoveY(shot.Shape.AsDynamicShape().Direction.Y);
                 if (shot.Shape.Position.Y > 1) {
                     shot.DeleteEntity();
                 } else {
