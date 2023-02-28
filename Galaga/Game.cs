@@ -18,6 +18,7 @@ namespace Galaga
         private EntityContainer<Enemy> enemies;
         private EntityContainer<PlayerShot> playerShots;
         private IBaseImage playerShotImage;
+        private Score scoreText;
 
         public Game(WindowArgs windowArgs) : base(windowArgs) {
             player = new Player(
@@ -35,14 +36,17 @@ namespace Galaga
                 enemies.AddEntity(new Enemy(
                     new DynamicShape(new Vec2F(0.1f + (float)i * 0.1f, 0.9f), new Vec2F(0.1f, 0.1f)),
                     new ImageStride(80, images)));
-            }
+            }   
             playerShots = new EntityContainer<PlayerShot>();
             playerShotImage = new Image(Path.Combine("Assets", "Images", "BulletRed2.png"));
+
+            scoreText = new Score(new Vec2F(0.05f, -0.2f), new Vec2F(0.25f, 0.25f));
         }
 
         public override void Render()
         {
             window.Clear();
+            scoreText.RenderScore();
             player.Render();
             enemies.RenderEntities();
             playerShots.RenderEntities();
@@ -108,6 +112,7 @@ namespace Galaga
                         if (collision.Collision) {
                             enemy.DeleteEntity();
                             shot.DeleteEntity();
+                            scoreText.IncrementScore();
                         }
                     });
                 }
