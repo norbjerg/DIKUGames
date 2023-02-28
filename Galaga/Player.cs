@@ -8,6 +8,8 @@ public class Player {
         private DynamicShape shape;
         private float moveLeft;
         private float moveRight;
+		private float moveUp;
+		private float moveDown;
         private const float MOVEMENT_SPEED = 0.01f;
 
         public Player(DynamicShape shape, IBaseImage image) {
@@ -15,6 +17,8 @@ public class Player {
             this.shape = shape;
             moveLeft = 0.0f;
             moveRight = 0.0f;
+			moveUp = 0.0f;
+			moveDown = 0.0f;
         }
 
         public void Render() {
@@ -25,6 +29,14 @@ public class Player {
             float min = 0.0f;
             // NOTE: Seems like the shape has position in its left corner, so 0.9 works best
             float max = 0.9f;
+			System.Console.WriteLine(shape.Direction);
+			System.Console.WriteLine(shape.Position.Y);
+			if (shape.Direction.X != 0 && shape.Direction.Y != 0) {
+					shape.Direction.X = shape.Direction.X/2;
+					shape.Direction.Y = shape.Direction.Y/2;
+					shape.Move();
+				return;
+			}
 			if (shape.Direction.X > 0) {
 				if (shape.Position.X < max) {
 					shape.Move();
@@ -32,6 +44,16 @@ public class Player {
 			}
 			if (shape.Direction.X < 0) {
 				if (shape.Position.X > min) {
+					shape.Move();
+				}
+			}
+			if (shape.Direction.Y < 0) {
+				if (shape.Position.Y > min) {
+					shape.Move();
+				}
+			}
+			if (shape.Direction.Y > 0) {
+				if (shape.Position.Y < max) {
 					shape.Move();
 				}
 			}
@@ -46,6 +68,7 @@ public class Player {
             }
             UpdateDirection();
         }
+
         public void SetMoveRight(bool val) {
             if (val) {
                 moveLeft = MOVEMENT_SPEED;
@@ -56,8 +79,29 @@ public class Player {
             UpdateDirection();
         }
 
+        public void SetMoveUp(bool val) {
+            if (val) {
+                moveUp = MOVEMENT_SPEED;
+            }
+            else {
+                moveUp = 0;
+            }
+            UpdateDirection();
+        }
+
+        public void SetMoveDown(bool val) {
+            if (val) {
+                moveDown = -MOVEMENT_SPEED;
+            }
+            else {
+                moveDown = 0;
+            }
+            UpdateDirection();
+        }
+
         private void UpdateDirection() {
             shape.Direction.X = moveLeft + moveRight;
+			shape.Direction.Y = moveUp + moveDown;
         }
 
         public Vec2F GetPosition() {
