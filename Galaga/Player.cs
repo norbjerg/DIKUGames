@@ -29,8 +29,6 @@ public class Player {
             float min = 0.0f;
             // NOTE: Seems like the shape has position in its left corner, so 0.9 works best
             float max = 0.9f;
-			System.Console.WriteLine(shape.Direction);
-			System.Console.WriteLine(shape.Position.Y);
 			if (shape.Direction.X != 0 && shape.Direction.Y != 0) {
 				return;
 			}
