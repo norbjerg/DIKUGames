@@ -18,6 +18,9 @@ namespace Galaga
         private EntityContainer<Enemy> enemies;
         private EntityContainer<PlayerShot> playerShots;
         private IBaseImage playerShotImage;
+        private AnimationContainer enemyExplosions;
+        private List<Image> explosionStrides;
+        private const int EXPLOSION_LENGTH_MS = 500;
 
         public Game(WindowArgs windowArgs) : base(windowArgs) {
             player = new Player(
@@ -38,14 +41,17 @@ namespace Galaga
             }
             playerShots = new EntityContainer<PlayerShot>();
             playerShotImage = new Image(Path.Combine("Assets", "Images", "BulletRed2.png"));
+            enemyExplosions = new AnimationContainer(numEnemies);
+            explosionStrides = ImageStride.CreateStrides(8,
+                Path.Combine("Assets", "Images", "Explosion.png"));
         }
 
         public override void Render()
         {
-            window.Clear();
             player.Render();
             enemies.RenderEntities();
             playerShots.RenderEntities();
+            enemyExplosions.RenderAnimations();
         }
 
         public override void Update()
@@ -119,11 +125,25 @@ namespace Galaga
 
                         if (collision.Collision) {
                             enemy.DeleteEntity();
+                            AddExplosion(enemy.Shape.Position, enemy.Shape.Extent);
                             shot.DeleteEntity();
                         }
                     });
                 }
             });
+        }
+
+        public void AddExplosion(Vec2F position, Vec2F extent) {
+            enemyExplosions.AddAnimation(
+                new StationaryShape(
+                    position.X,
+                    position.Y,
+                    extent.X,
+                    extent.Y),
+                EXPLOSION_LENGTH_MS,
+                new ImageStride(
+                    (int) EXPLOSION_LENGTH_MS / 8,
+                    explosionStrides));
         }
     }
 }
