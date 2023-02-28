@@ -73,6 +73,12 @@ namespace Galaga
                 case KeyboardKey.Right:
                     player.SetMoveRight(true);
                     break;
+                case KeyboardKey.Up:
+                    player.SetMoveUp(true);
+                    break;
+                case KeyboardKey.Down:
+                    player.SetMoveDown(true);
+                    break;
             }
         }
         private void KeyRelease(KeyboardKey key) {
@@ -82,6 +88,12 @@ namespace Galaga
                     break;
                 case KeyboardKey.Right:
                     player.SetMoveRight(false);
+                    break;
+                case KeyboardKey.Up:
+                    player.SetMoveUp(false);
+                    break;
+                case KeyboardKey.Down:
+                    player.SetMoveDown(false);
                     break;
                 case KeyboardKey.Space:
                     playerShots.AddEntity(new PlayerShot(player.GetPosition(), playerShotImage));
@@ -110,7 +122,7 @@ namespace Galaga
                     enemies.Iterate(enemy => {
                         CollisionData collision = CollisionDetection.Aabb(
                             shot.Shape.AsDynamicShape(), enemy.Shape);
-                        
+
                         if (collision.Collision) {
                             enemy.DeleteEntity();
                             AddExplosion(enemy.Shape.Position, enemy.Shape.Extent);
