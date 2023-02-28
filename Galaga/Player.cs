@@ -32,9 +32,6 @@ public class Player {
 			System.Console.WriteLine(shape.Direction);
 			System.Console.WriteLine(shape.Position.Y);
 			if (shape.Direction.X != 0 && shape.Direction.Y != 0) {
-					shape.Direction.X = shape.Direction.X/2;
-					shape.Direction.Y = shape.Direction.Y/2;
-					shape.Move();
 				return;
 			}
 			if (shape.Direction.X > 0) {
@@ -53,7 +50,7 @@ public class Player {
 				}
 			}
 			if (shape.Direction.Y > 0) {
-				if (shape.Position.Y < max) {
+				if (shape.Position.Y < max/2) {
 					shape.Move();
 				}
 			}
