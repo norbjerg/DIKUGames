@@ -1,5 +1,7 @@
 using DIKUArcade.Entities;
 using DIKUArcade.Graphics;
+using DIKUArcade.Math;
+
 namespace Galaga {
 public class Player {
         private Entity entity;
@@ -26,12 +28,13 @@ public class Player {
             if (shape.Position.X > min && shape.Position.X < max) {
                 shape.Move();
             }
+            // This is to make it so the player does not get stuck, moves it back a little
             else {
                 if (shape.Position.X <= min) {
-                    shape.MoveX(0.01f);
+                    shape.MoveX(MOVEMENT_SPEED);
                 }
                 else if (shape.Position.X >= max) {
-                    shape.MoveX(-0.01f);
+                    shape.MoveX(-MOVEMENT_SPEED);
                 }
             }
         }
@@ -57,6 +60,11 @@ public class Player {
 
         private void UpdateDirection() {
             shape.Direction.X = moveLeft + moveRight;
+        }
+
+        public Vec2F GetPosition() {
+            // NOTE: Since the position is actually in the left corner, we offset it to be centered
+            return new Vec2F(entity.Shape.Position.X + 0.05f, entity.Shape.Position.Y + 0.05f);
         }
     }
 }
