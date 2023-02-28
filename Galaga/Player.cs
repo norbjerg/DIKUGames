@@ -25,19 +25,17 @@ public class Player {
             float min = 0.0f;
             // NOTE: Seems like the shape has position in its left corner, so 0.9 works best
             float max = 0.9f;
-            if (shape.Position.X > min && shape.Position.X < max) {
-                shape.Move();
-            }
-            // This is to make it so the player does not get stuck, moves it back a little
-            else {
-                if (shape.Position.X <= min) {
-                    shape.MoveX(MOVEMENT_SPEED);
-                }
-                else if (shape.Position.X >= max) {
-                    shape.MoveX(-MOVEMENT_SPEED);
-                }
-            }
-        }
+			if (shape.Direction.X > 0) {
+				if (shape.Position.X < max) {
+					shape.Move();
+				}
+			}
+			if (shape.Direction.X < 0) {
+				if (shape.Position.X > min) {
+					shape.Move();
+				}
+			}
+		}
 
         public void SetMoveLeft(bool val) {
             if (val) {
