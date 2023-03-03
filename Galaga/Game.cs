@@ -31,6 +31,7 @@ namespace Galaga
             eventBus.InitializeEventBus(new List<GameEventType> { GameEventType.InputEvent, GameEventType.WindowEvent });
             window.SetKeyEventHandler(KeyHandler);
             eventBus.Subscribe(GameEventType.InputEvent, this);
+            eventBus.Subscribe(GameEventType.WindowEvent, this);
             List<Image> images = ImageStride.CreateStrides
                 (4, Path.Combine("Assets", "Images", "BlueMonster.png"));
             const int numEnemies = 8;
@@ -74,7 +75,6 @@ namespace Galaga
                     game_event.EventType = GameEventType.WindowEvent;
                     game_event.Message = "Close window";
                     eventBus.RegisterEvent(game_event);
-                    ProcessEvent(game_event);
                     break;
                 case KeyboardKey.Left:
                     player.SetMoveLeft(true);
