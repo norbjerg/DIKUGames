@@ -28,7 +28,7 @@ namespace Galaga
                 new DynamicShape(new Vec2F(0.45f, 0.1f), new Vec2F(0.1f, 0.1f)),
                 new Image(Path.Combine("Assets", "Images", "Player.png")));
             eventBus = new GameEventBus();
-            eventBus.InitializeEventBus(new List<GameEventType> { GameEventType.InputEvent });
+            eventBus.InitializeEventBus(new List<GameEventType> { GameEventType.InputEvent, GameEventType.WindowEvent });
             window.SetKeyEventHandler(KeyHandler);
             eventBus.Subscribe(GameEventType.InputEvent, this);
             List<Image> images = ImageStride.CreateStrides
@@ -70,7 +70,11 @@ namespace Galaga
         private void KeyPress(KeyboardKey key) {
             switch (key) {
                 case KeyboardKey.Escape:
-                    eventBus.InitializeEventBus(new List<GameEventType> { GameEventType.WindowEvent });
+                    GameEvent game_event = new GameEvent();
+                    game_event.EventType = GameEventType.WindowEvent;
+                    game_event.Message = "Close window";
+                    eventBus.RegisterEvent(game_event);
+                    ProcessEvent(game_event);
                     break;
                 case KeyboardKey.Left:
                     player.SetMoveLeft(true);
@@ -114,7 +118,11 @@ namespace Galaga
             }
         }
         public void ProcessEvent(GameEvent gameEvent) {
-            // Leave this empty for now
+            if (gameEvent.EventType == GameEventType.WindowEvent) {
+                if (gameEvent.Message == "Close window") {
+                    window.CloseWindow();
+                }
+            }
         }
 
 
