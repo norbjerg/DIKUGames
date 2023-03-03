@@ -26,31 +26,29 @@ public class Player {
         }
 
         public void Move() {
-            float min = 0.0f;
+            UpdateDirection();
+
+            //Normalises the vector, so that it doesen't move at 2x speed when travelling diagonal
+            if (shape.Direction.X != 0 && shape.Direction.Y != 0){
+                double length =
+                    System.Math.Sqrt(System.Math.Pow(shape.Direction.X, 2d) +
+                    System.Math.Pow(shape.Direction.Y, 2d));
+
+                shape.Direction.X = shape.Direction.X / (float)length * MOVEMENT_SPEED;
+                shape.Direction.Y = shape.Direction.Y / (float)length * MOVEMENT_SPEED;
+
+            }
+            float potX = GetPosition().X + shape.Direction.X;
+            float potY = GetPosition().Y + shape.Direction.Y;
+            
+
+            float min = 0.0f+shape.Extent.X/2;
             // NOTE: Seems like the shape has position in its left corner, so 0.9 works best
-            float max = 0.9f;
-			if (shape.Direction.X != 0 && shape.Direction.Y != 0) {
-				return;
-			}
-			if (shape.Direction.X > 0) {
-				if (shape.Position.X < max) {
+            float max = 0.9f-shape.Extent.X/2;
+			if (min < potX && potX < max) {
+                if (min < potY && potY < max/2) {
 					shape.Move();
-				}
-			}
-			if (shape.Direction.X < 0) {
-				if (shape.Position.X > min) {
-					shape.Move();
-				}
-			}
-			if (shape.Direction.Y < 0) {
-				if (shape.Position.Y > min) {
-					shape.Move();
-				}
-			}
-			if (shape.Direction.Y > 0) {
-				if (shape.Position.Y < max/2) {
-					shape.Move();
-				}
+                }
 			}
 		}
 
@@ -61,17 +59,15 @@ public class Player {
             else {
                 moveLeft = 0;
             }
-            UpdateDirection();
         }
 
         public void SetMoveRight(bool val) {
             if (val) {
-                moveLeft = MOVEMENT_SPEED;
+                moveRight = MOVEMENT_SPEED;
             }
             else {
-                moveLeft = 0;
+                moveRight = 0;
             }
-            UpdateDirection();
         }
 
         public void SetMoveUp(bool val) {
@@ -81,7 +77,6 @@ public class Player {
             else {
                 moveUp = 0;
             }
-            UpdateDirection();
         }
 
         public void SetMoveDown(bool val) {
@@ -91,7 +86,6 @@ public class Player {
             else {
                 moveDown = 0;
             }
-            UpdateDirection();
         }
 
         private void UpdateDirection() {

@@ -29,9 +29,9 @@ namespace Galaga
                 new Image(Path.Combine("Assets", "Images", "Player.png")));
             eventBus = new GameEventBus();
             eventBus.InitializeEventBus(new List<GameEventType> { GameEventType.InputEvent, GameEventType.WindowEvent });
-            window.SetKeyEventHandler(KeyHandler);
             eventBus.Subscribe(GameEventType.InputEvent, this);
             eventBus.Subscribe(GameEventType.WindowEvent, this);
+            window.SetKeyEventHandler(KeyHandler);
             List<Image> images = ImageStride.CreateStrides
                 (4, Path.Combine("Assets", "Images", "BlueMonster.png"));
             const int numEnemies = 8;
