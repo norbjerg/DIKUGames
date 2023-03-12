@@ -48,7 +48,7 @@ namespace Galaga
                     new DynamicShape(new Vec2F(0.1f + (float)i * 0.1f, 0.9f), new Vec2F(0.1f, 0.1f)),
                     new ImageStride(80, enemyStridesGreen),
                     new ImageStride(80, enemyStridesRed)));
-            }   
+            }
             playerShots = new EntityContainer<PlayerShot>();
             playerShotImage = new Image(Path.Combine("Assets", "Images", "BulletRed2.png"));
 
