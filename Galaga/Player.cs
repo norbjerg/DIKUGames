@@ -108,7 +108,6 @@ public class Player : IGameEventProcessor {
 
         public void ProcessEvent(GameEvent gameEvent)
         {
-            System.Console.WriteLine(gameEvent);
             if (gameEvent.EventType == GameEventType.InputEvent) {
                 switch (gameEvent.Message) {
                     case ("UP PRESS"):
