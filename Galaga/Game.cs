@@ -24,13 +24,14 @@ namespace Galaga
         private const int EXPLOSION_LENGTH_MS = 500;
 
         public Game(WindowArgs windowArgs) : base(windowArgs) {
-            player = new Player(
-                new DynamicShape(new Vec2F(0.45f, 0.1f), new Vec2F(0.1f, 0.1f)),
-                new Image(Path.Combine("Assets", "Images", "Player.png")));
             eventBus = new GameEventBus();
             eventBus.InitializeEventBus(new List<GameEventType> { GameEventType.InputEvent, GameEventType.WindowEvent });
             eventBus.Subscribe(GameEventType.InputEvent, this);
             eventBus.Subscribe(GameEventType.WindowEvent, this);
+            player = new Player(
+                new DynamicShape(new Vec2F(0.45f, 0.1f), new Vec2F(0.1f, 0.1f)),
+                new Image(Path.Combine("Assets", "Images", "Player.png")),
+                eventBus);
             window.SetKeyEventHandler(KeyHandler);
             List<Image> images = ImageStride.CreateStrides
                 (4, Path.Combine("Assets", "Images", "BlueMonster.png"));
@@ -77,32 +78,72 @@ namespace Galaga
                     eventBus.RegisterEvent(game_event);
                     break;
                 case KeyboardKey.Left:
-                    player.SetMoveLeft(true);
+                    eventBus.RegisterEvent (new GameEvent {
+                        EventType = GameEventType.InputEvent,
+                        From=this,
+                        To=player,
+                        Message="LEFT PRESS"
+                    });
                     break;
                 case KeyboardKey.Right:
-                    player.SetMoveRight(true);
+                    eventBus.RegisterEvent (new GameEvent {
+                        EventType = GameEventType.InputEvent,
+                        From=this,
+                        To=player,
+                        Message="RIGHT PRESS"
+                    });
                     break;
                 case KeyboardKey.Up:
-                    player.SetMoveUp(true);
+                    eventBus.RegisterEvent (new GameEvent {
+                        EventType = GameEventType.InputEvent,
+                        From=this,
+                        To=player,
+                        Message="UP PRESS"
+                    });
                     break;
                 case KeyboardKey.Down:
-                    player.SetMoveDown(true);
+                    eventBus.RegisterEvent (new GameEvent {
+                        EventType = GameEventType.InputEvent,
+                        From=this,
+                        To=player,
+                        Message="DOWN PRESS"
+                    });
                     break;
             }
         }
         private void KeyRelease(KeyboardKey key) {
             switch (key) {
                 case KeyboardKey.Left:
-                    player.SetMoveLeft(false);
+                    eventBus.RegisterEvent (new GameEvent {
+                        EventType = GameEventType.InputEvent,
+                        From=this,
+                        To=player,
+                        Message="LEFT RELEASE"
+                    });
                     break;
                 case KeyboardKey.Right:
-                    player.SetMoveRight(false);
+                    eventBus.RegisterEvent (new GameEvent {
+                        EventType = GameEventType.InputEvent,
+                        From=this,
+                        To=player,
+                        Message="RIGHT RELEASE"
+                    });
                     break;
                 case KeyboardKey.Up:
-                    player.SetMoveUp(false);
+                    eventBus.RegisterEvent (new GameEvent {
+                        EventType = GameEventType.InputEvent,
+                        From=this,
+                        To=player,
+                        Message="UP RELEASE"
+                    });
                     break;
                 case KeyboardKey.Down:
-                    player.SetMoveDown(false);
+                    eventBus.RegisterEvent (new GameEvent {
+                        EventType = GameEventType.InputEvent,
+                        From=this,
+                        To=player,
+                        Message="DOWN RELEASE"
+                    });
                     break;
                 case KeyboardKey.Space:
                     playerShots.AddEntity(new PlayerShot(player.GetPosition(), playerShotImage));
