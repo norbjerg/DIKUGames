@@ -22,6 +22,8 @@ namespace Galaga
         private AnimationContainer enemyExplosions;
         private List<Image> explosionStrides;
         private const int EXPLOSION_LENGTH_MS = 500;
+        private List<Image> enemyStridesGreen;
+        private List<Image> enemyStridesRed;
 
         public Game(WindowArgs windowArgs) : base(windowArgs) {
             eventBus = new GameEventBus();
@@ -37,10 +39,15 @@ namespace Galaga
                 (4, Path.Combine("Assets", "Images", "BlueMonster.png"));
             const int numEnemies = 8;
             enemies = new EntityContainer<Enemy>(numEnemies);
+            enemyStridesGreen = ImageStride.CreateStrides(
+                2, Path.Combine("Assets", "Images", "GreenMonster.png"));
+            enemyStridesRed = ImageStride.CreateStrides(
+                2, Path.Combine("Assets", "Images", "RedMonster.png"));
             for (int i = 0; i < numEnemies; i++) {
                 enemies.AddEntity(new Enemy(
                     new DynamicShape(new Vec2F(0.1f + (float)i * 0.1f, 0.9f), new Vec2F(0.1f, 0.1f)),
-                    new ImageStride(80, images)));
+                    new ImageStride(80, enemyStridesGreen),
+                    new ImageStride(80, enemyStridesRed)));
             }   
             playerShots = new EntityContainer<PlayerShot>();
             playerShotImage = new Image(Path.Combine("Assets", "Images", "BulletRed2.png"));
@@ -178,10 +185,12 @@ namespace Galaga
                             shot.Shape.AsDynamicShape(), enemy.Shape);
 
                         if (collision.Collision) {
-                            enemy.DeleteEntity();
-                            AddExplosion(enemy.Shape.Position, enemy.Shape.Extent);
                             shot.DeleteEntity();
-                            scoreText.IncrementScore();
+                            if (enemy.getShot()) {
+                                enemy.DeleteEntity();
+                                AddExplosion(enemy.Shape.Position, enemy.Shape.Extent);
+                                scoreText.IncrementScore();
+                            }
                         }
                     });
                 }
