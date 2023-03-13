@@ -29,6 +29,7 @@ namespace Galaga
         private Health health;
         private Text levelCounter;
         private bool gameOver;
+		private Text gameOverText;
         private int loseHealthBuffer;
 
         public Game(WindowArgs windowArgs) : base(windowArgs) {
@@ -69,6 +70,8 @@ namespace Galaga
                 "Level " + level, new Vec2F(0.5f, -0.2f), new Vec2F(0.25f, 0.25f));
             levelCounter.SetColor(new Vec3I(255,255,255));
             gameOver = false;
+			gameOverText = new Text("GAME OVER", new Vec2F(0.1f,0f), new Vec2F(1f,0.7f));
+			gameOverText.SetColor(new Vec3I(255,255,255));
             loseHealthBuffer = 0;
         }
 
@@ -84,6 +87,9 @@ namespace Galaga
                 health.RenderHealth();
             }
             levelCounter.RenderText();
+			if (gameOver) {
+				gameOverText.RenderText();
+			}
         }
 
         public override void Update()
@@ -96,6 +102,7 @@ namespace Galaga
                 IterateShots();
                 IterateEnemies();
             }
+
         }
 
         private void KeyPress(KeyboardKey key) {
@@ -232,14 +239,14 @@ namespace Galaga
                     (int) EXPLOSION_LENGTH_MS / 8,
                     explosionStrides));
         }
-    
+
         private void nextLevel() {
             if (enemies.CountEntities() <= 1) {
                 level += 1;
                 levelCounter.SetText("Level " + level);
                 enemies.Iterate(enemy => {
                     Squadron.StandardFormation formation = new Squadron.StandardFormation(
-                        enemy.Speed * level);
+                        (enemy.Speed + (0.0003f/2f)));
                     enemies = formation.Enemies;
                     formation.CreateEnemies(enemyStridesGreen, enemyStridesRed);
                 });
@@ -255,7 +262,7 @@ namespace Galaga
                     && enemy.Shape.Position.X > playerPosition.X - playerExtent.X/2)
                     && (enemy.Shape.Position.Y < playerPosition.Y + playerExtent.Y/2
                     && enemy.Shape.Position.Y > playerPosition.Y - playerExtent.Y/2)) {
-                    
+
                     if (loseHealthBuffer == 0) {
                         health.LoseHealth();
                         loseHealthBuffer = 10;
