@@ -248,12 +248,12 @@ namespace Galaga
 				int formationNum = rnd.Next(1, 5);
                 level += 1;
                 levelCounter.SetText("Level " + level);
-                enemies.Iterate(enemy => {
-                    ISquadron formation = nextFormation(formationNum);
-					enemy.IncreaseSpeed((0.0003f/2f));
-                    enemies = formation.Enemies;
-                    formation.CreateEnemies(enemyStridesGreen, enemyStridesRed);
-                });
+                ISquadron formation = nextFormation(formationNum);
+                enemies = formation.Enemies;
+                formation.CreateEnemies(enemyStridesGreen, enemyStridesRed);
+				enemies.Iterate(enemy => {
+					enemy.IncreaseSpeed((0.0003f*level));
+				});
             }
         }
 
