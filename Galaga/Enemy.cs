@@ -39,4 +39,8 @@ public class Enemy : Entity {
         }
         return false;
     }
+
+	public void IncreaseSpeed(float spdincrement) {
+		Speed += spdincrement;
+	}
 }

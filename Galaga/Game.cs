@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using DIKUArcade.Entities;
 using DIKUArcade.Graphics;
@@ -8,6 +9,7 @@ using DIKUArcade.GUI;
 using DIKUArcade.Events;
 using DIKUArcade.Input;
 using System.Collections.Generic;
+using Galaga.Squadron;
 
 namespace Galaga
 {
@@ -242,16 +244,38 @@ namespace Galaga
 
         private void nextLevel() {
             if (enemies.CountEntities() <= 1) {
+				Random rnd = new Random();
+				int formationNum = rnd.Next(1, 5);
                 level += 1;
                 levelCounter.SetText("Level " + level);
                 enemies.Iterate(enemy => {
-                    Squadron.StandardFormation formation = new Squadron.StandardFormation(
-                        (enemy.Speed + (0.0003f/2f)));
+                    ISquadron formation = nextFormation(formationNum);
+					enemy.IncreaseSpeed((0.0003f/2f));
                     enemies = formation.Enemies;
                     formation.CreateEnemies(enemyStridesGreen, enemyStridesRed);
                 });
             }
         }
+
+		private ISquadron nextFormation(int num){
+			switch (num) {
+				case 1:
+					return new StandardFormation();
+				case 2:
+					return new DiagonalFormation();
+				case 3:
+					return new CircleFormation();
+				case 4:
+					if (level > 4) {
+						return new HellFormation();
+					} else {
+						return new StandardFormation();
+					}
+				default:
+					return new StandardFormation();
+			}
+		}
+
 
         private void IterateEnemies() {
             enemies.Iterate(enemy => {
