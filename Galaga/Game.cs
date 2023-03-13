@@ -10,6 +10,7 @@ using DIKUArcade.Events;
 using DIKUArcade.Input;
 using System.Collections.Generic;
 using Galaga.Squadron;
+using Galaga.MovementStrategy;
 
 namespace Galaga
 {
@@ -26,7 +27,7 @@ namespace Galaga
         private const int EXPLOSION_LENGTH_MS = 500;
         private List<Image> enemyStridesGreen;
         private List<Image> enemyStridesRed;
-        private MovementStrategy.IMovementStrategy movementStrategy;
+        private IMovementStrategy movementStrategy;
         private int level;
         private Health health;
         private Text levelCounter;
@@ -65,7 +66,7 @@ namespace Galaga
             enemyExplosions = new AnimationContainer(numEnemies);
             explosionStrides = ImageStride.CreateStrides(8,
                 Path.Combine("Assets", "Images", "Explosion.png"));
-            movementStrategy = new MovementStrategy.ZigZagDown();
+            movementStrategy = new NoMove();
             level = 1;
             health = new Health(new Vec2F(0.85f, -0.2f), new Vec2F(0.25f, 0.25f));
             levelCounter = new Text(
@@ -254,8 +255,22 @@ namespace Galaga
 				enemies.Iterate(enemy => {
 					enemy.IncreaseSpeed((0.0003f*level));
 				});
+				int movementNum = rnd.Next(1, 3);
+				nextMovement(movementNum);
             }
+
         }
+
+		private void nextMovement(int num) {
+			switch (num) {
+				case 1:
+					movementStrategy = new Down();
+					break;
+				case 2:
+					movementStrategy = new ZigZagDown();
+					break;
+			}
+		}
 
 		private ISquadron nextFormation(int num){
 			switch (num) {
