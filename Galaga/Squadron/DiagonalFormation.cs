@@ -28,3 +28,4 @@ class DiagonalFormation : ISquadron
         }
     }
 }
+
