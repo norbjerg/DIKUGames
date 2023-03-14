@@ -106,6 +106,10 @@ public class Player : IGameEventProcessor {
             return new Vec2F(entity.Shape.Position.X + 0.05f, entity.Shape.Position.Y + 0.05f);
         }
 
+        public Vec2F GetExtent() {
+            return entity.Shape.Extent;
+        }
+
         public void ProcessEvent(GameEvent gameEvent)
         {
             if (gameEvent.EventType == GameEventType.InputEvent) {
@@ -137,5 +141,6 @@ public class Player : IGameEventProcessor {
                 }
             }
         }
+
     }
 }
