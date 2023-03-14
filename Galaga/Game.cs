@@ -89,10 +89,10 @@ namespace Galaga
                 enemyExplosions.RenderAnimations();
                 health.RenderHealth();
             }
-            levelCounter.RenderText();
 			if (gameOver) {
 				gameOverText.RenderText();
 			}
+            levelCounter.RenderText();
         }
 
         public override void Update()

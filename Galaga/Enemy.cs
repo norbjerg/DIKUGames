@@ -34,7 +34,7 @@ public class Enemy : Entity {
         else if (hitpoints == 2) {
             hitpoints -= 1;
             this.Image = this.enemyStrideRed;
-            Speed *= 2;
+			IncreaseSpeed(Speed * 2);
             return false;
         }
         return false;
