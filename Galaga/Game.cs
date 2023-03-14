@@ -24,6 +24,7 @@ namespace Galaga
         private const int EXPLOSION_LENGTH_MS = 500;
         private List<Image> enemyStridesGreen;
         private List<Image> enemyStridesRed;
+        private MovementStrategy.IMovementStrategy movementStrategy = new MovementStrategy.ZigZagDown();
 
         public Game(WindowArgs windowArgs) : base(windowArgs) {
             eventBus = new GameEventBus();
@@ -73,6 +74,7 @@ namespace Galaga
             window.PollEvents();
             eventBus.ProcessEventsSequentially();
             player.Move();
+            movementStrategy.MoveEnemies(enemies);
             IterateShots();
         }
 

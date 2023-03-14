@@ -4,8 +4,10 @@ namespace Galaga;
 public class Enemy : Entity {
 
     private int hitpoints;
-    private float speed;
+    public float Speed { get; private set; }
     private IBaseImage enemyStrideRed;
+    public float X0 { get; }
+    public float Y0 { get; }
 
     public Enemy(DynamicShape shape,
         IBaseImage image,
@@ -13,7 +15,9 @@ public class Enemy : Entity {
     : base(shape, image) {
         hitpoints = 4;
         this.enemyStrideRed = enemyStrideRed;
-        speed = 0.01f;
+        Speed = 0.0003f;
+        X0 = shape.Position.X;
+        Y0 = shape.Position.Y;
     }
 
     /// <summary>
@@ -29,7 +33,7 @@ public class Enemy : Entity {
         else if (hitpoints == 2) {
             hitpoints -= 1;
             this.Image = this.enemyStrideRed;
-            speed *= 2;
+            Speed *= 2;
             return false;
         }
         return false;
