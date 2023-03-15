@@ -11,11 +11,12 @@ public class Enemy : Entity {
 
     public Enemy(DynamicShape shape,
         IBaseImage image,
-        IBaseImage enemyStrideRed)
+        IBaseImage enemyStrideRed,
+        float speed = 0.0003f)
     : base(shape, image) {
         hitpoints = 4;
         this.enemyStrideRed = enemyStrideRed;
-        Speed = 0.0003f;
+        Speed = speed;
         X0 = shape.Position.X;
         Y0 = shape.Position.Y;
     }
@@ -33,9 +34,13 @@ public class Enemy : Entity {
         else if (hitpoints == 2) {
             hitpoints -= 1;
             this.Image = this.enemyStrideRed;
-            Speed *= 2;
+			IncreaseSpeed(Speed * 2);
             return false;
         }
         return false;
     }
+
+	public void IncreaseSpeed(float spdincrement) {
+		Speed += spdincrement;
+	}
 }

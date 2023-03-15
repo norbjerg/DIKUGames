@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using DIKUArcade.Entities;
 using DIKUArcade.Graphics;
@@ -8,6 +9,8 @@ using DIKUArcade.GUI;
 using DIKUArcade.Events;
 using DIKUArcade.Input;
 using System.Collections.Generic;
+using Galaga.Squadron;
+using Galaga.MovementStrategy;
 
 namespace Galaga
 {
@@ -24,7 +27,13 @@ namespace Galaga
         private const int EXPLOSION_LENGTH_MS = 500;
         private List<Image> enemyStridesGreen;
         private List<Image> enemyStridesRed;
-        private MovementStrategy.IMovementStrategy movementStrategy = new MovementStrategy.ZigZagDown();
+        private IMovementStrategy movementStrategy;
+        private int level;
+        private Health health;
+        private Text levelCounter;
+        private bool gameOver;
+		private Text gameOverText;
+        private int loseHealthBuffer;
 
         public Game(WindowArgs windowArgs) : base(windowArgs) {
             eventBus = new GameEventBus();
@@ -57,25 +66,46 @@ namespace Galaga
             enemyExplosions = new AnimationContainer(numEnemies);
             explosionStrides = ImageStride.CreateStrides(8,
                 Path.Combine("Assets", "Images", "Explosion.png"));
+            movementStrategy = new NoMove();
+            level = 1;
+            health = new Health(new Vec2F(0.85f, -0.2f), new Vec2F(0.25f, 0.25f));
+            levelCounter = new Text(
+                "Level " + level, new Vec2F(0.5f, -0.2f), new Vec2F(0.25f, 0.25f));
+            levelCounter.SetColor(new Vec3I(255,255,255));
+            gameOver = false;
+			gameOverText = new Text("GAME OVER", new Vec2F(0.1f,0f), new Vec2F(1f,0.7f));
+			gameOverText.SetColor(new Vec3I(255,255,255));
+            loseHealthBuffer = 0;
         }
 
         public override void Render()
         {
             window.Clear();
-            scoreText.RenderScore();
-            player.Render();
-            enemies.RenderEntities();
-            playerShots.RenderEntities();
-            enemyExplosions.RenderAnimations();
+            if (!gameOver) {
+                scoreText.RenderScore();
+                player.Render();
+                enemies.RenderEntities();
+                playerShots.RenderEntities();
+                enemyExplosions.RenderAnimations();
+                health.RenderHealth();
+            }
+			if (gameOver) {
+				gameOverText.RenderText();
+			}
+            levelCounter.RenderText();
         }
 
         public override void Update()
         {
             window.PollEvents();
             eventBus.ProcessEventsSequentially();
-            player.Move();
-            movementStrategy.MoveEnemies(enemies);
-            IterateShots();
+            if (!gameOver) {
+                player.Move();
+                movementStrategy.MoveEnemies(enemies);
+                IterateShots();
+                IterateEnemies();
+            }
+
         }
 
         private void KeyPress(KeyboardKey key) {
@@ -189,6 +219,7 @@ namespace Galaga
                         if (collision.Collision) {
                             shot.DeleteEntity();
                             if (enemy.getShot()) {
+                                nextLevel();
                                 enemy.DeleteEntity();
                                 AddExplosion(enemy.Shape.Position, enemy.Shape.Extent);
                                 scoreText.IncrementScore();
@@ -210,6 +241,83 @@ namespace Galaga
                 new ImageStride(
                     (int) EXPLOSION_LENGTH_MS / 8,
                     explosionStrides));
+        }
+
+        private void nextLevel() {
+            if (enemies.CountEntities() <= 1) {
+				Random rnd = new Random();
+				int formationNum = rnd.Next(1, 5);
+                level += 1;
+                levelCounter.SetText("Level " + level);
+                ISquadron formation = nextFormation(formationNum);
+                enemies = formation.Enemies;
+                formation.CreateEnemies(enemyStridesGreen, enemyStridesRed);
+				enemies.Iterate(enemy => {
+					enemy.IncreaseSpeed((0.0003f*level));
+				});
+				int movementNum = rnd.Next(1, 3);
+				nextMovement(movementNum);
+            }
+
+        }
+
+		private void nextMovement(int num) {
+			switch (num) {
+				case 1:
+					movementStrategy = new Down();
+					break;
+				case 2:
+					movementStrategy = new ZigZagDown();
+					break;
+			}
+		}
+
+		private ISquadron nextFormation(int num){
+			switch (num) {
+				case 1:
+					return new StandardFormation();
+				case 2:
+					return new DiagonalFormation();
+				case 3:
+					return new CircleFormation();
+				case 4:
+					if (level > 4) {
+						return new HellFormation();
+					} else {
+						return new StandardFormation();
+					}
+				default:
+					return new StandardFormation();
+			}
+		}
+
+
+        private void IterateEnemies() {
+            enemies.Iterate(enemy => {
+                Vec2F playerPosition = player.GetPosition();
+                Vec2F playerExtent = player.GetExtent();
+
+                if ((enemy.Shape.Position.X < playerPosition.X + playerExtent.X/2
+                    && enemy.Shape.Position.X > playerPosition.X - playerExtent.X/2)
+                    && (enemy.Shape.Position.Y < playerPosition.Y + playerExtent.Y/2
+                    && enemy.Shape.Position.Y > playerPosition.Y - playerExtent.Y/2)) {
+
+                    if (loseHealthBuffer == 0) {
+                        health.LoseHealth();
+                        loseHealthBuffer = 10;
+                    }
+                    else {
+                        loseHealthBuffer -= 1;
+                    }
+                    if (health.GetHealth() == 0) {
+                        gameOver = true;
+                    }
+                }
+
+                if (enemy.Shape.Position.Y < 0.05f) {
+                    gameOver = true;
+                }
+            });
         }
     }
 }
