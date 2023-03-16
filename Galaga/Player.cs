@@ -2,7 +2,7 @@ using DIKUArcade.Entities;
 using DIKUArcade.Graphics;
 using DIKUArcade.Math;
 using DIKUArcade.Events;
-using System.Collections.Generic;
+using DIKUArcade.Physics;
 
 namespace Galaga {
 public class Player : IGameEventProcessor {
@@ -12,6 +12,7 @@ public class Player : IGameEventProcessor {
         private float moveRight;
 		private float moveUp;
 		private float moveDown;
+        private Health health;
         private const float MOVEMENT_SPEED = 0.01f;
         private GameEventBus eventBus;
 
@@ -23,17 +24,28 @@ public class Player : IGameEventProcessor {
             moveRight = 0.0f;
 			moveUp = 0.0f;
 			moveDown = 0.0f;
-
+            health = new Health(new Vec2F(0.85f, -0.2f), new Vec2F(0.25f, 0.25f));
+            
             this.eventBus = eventBus;
         }
 
         public void Render() {
-            entity.RenderEntity();
+            //Blinking when taking damage!
+            if (this.health.loseHealthBuffer / 10 % 2 == 0) 
+                entity.RenderEntity();
+        }
+
+        public void RenderHealth() {
+            this.health.RenderHealth();
+        }
+
+        public void UpdateHealthBuffer() {
+            this.health.UpdateHealthBuffer();
         }
 
         public void Move() {
             UpdateDirection();
-
+            
             //Normalizes the vector, so that it doesn't move at 2x speed when traveling diagonal
             if (shape.Direction.X != 0 && shape.Direction.Y != 0){
                 double length =
@@ -54,46 +66,26 @@ public class Player : IGameEventProcessor {
             float maxX = 0.9f + shape.Extent.X/2;
 
 			if (min < potX && potX < maxX) {
-                if (min < potY && potY < maxY/2) {
+                if (min < potY && potY < maxY) {
 					shape.Move();
                 }
 			}
 		}
 
         private void SetMoveLeft(bool val) {
-            if (val) {
-                moveLeft = -MOVEMENT_SPEED;
-            }
-            else {
-                moveLeft = 0;
-            }
+            moveLeft = (val) ? -MOVEMENT_SPEED : 0;
         }
 
         private void SetMoveRight(bool val) {
-            if (val) {
-                moveRight = MOVEMENT_SPEED;
-            }
-            else {
-                moveRight = 0;
-            }
+            moveRight = (val) ? MOVEMENT_SPEED : 0;
         }
 
         private void SetMoveUp(bool val) {
-            if (val) {
-                moveUp = MOVEMENT_SPEED;
-            }
-            else {
-                moveUp = 0;
-            }
+            moveUp = (val) ? MOVEMENT_SPEED : 0;
         }
 
         private void SetMoveDown(bool val) {
-            if (val) {
-                moveDown = -MOVEMENT_SPEED;
-            }
-            else {
-                moveDown = 0;
-            }
+            moveDown = (val) ? -MOVEMENT_SPEED : 0;
         }
 
         private void UpdateDirection() {
@@ -106,9 +98,7 @@ public class Player : IGameEventProcessor {
             return new Vec2F(entity.Shape.Position.X + 0.05f, entity.Shape.Position.Y + 0.05f);
         }
 
-        public Vec2F GetExtent() {
-            return entity.Shape.Extent;
-        }
+        public Vec2F GetExtent() => entity.Shape.Extent;
 
         public void ProcessEvent(GameEvent gameEvent)
         {
@@ -142,5 +132,11 @@ public class Player : IGameEventProcessor {
             }
         }
 
+        public bool CollidedWithPlayer(Shape otherShape, bool isEvil)  {
+            CollisionData collision = CollisionDetection.Aabb(this.shape, otherShape);
+            if (collision.Collision && isEvil)
+                return this.health.LoseHealth();
+            return false;
+        }
     }
 }
