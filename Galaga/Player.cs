@@ -45,7 +45,6 @@ public class Player : IGameEventProcessor {
 
         public void Move() {
             UpdateDirection();
-            
             //Normalizes the vector, so that it doesn't move at 2x speed when traveling diagonal
             if (shape.Direction.X != 0 && shape.Direction.Y != 0){
                 double length =
