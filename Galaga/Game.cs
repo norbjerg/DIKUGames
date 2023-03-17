@@ -22,6 +22,7 @@ namespace Galaga
         private EntityContainer<PlayerShot> playerShots;
         private IBaseImage playerShotImage;
         private Score scoreText;
+        private Background background;
         private AnimationContainer enemyExplosions;
         private List<Image> explosionStrides;
         private const int EXPLOSION_LENGTH_MS = 500;
@@ -29,11 +30,9 @@ namespace Galaga
         private List<Image> enemyStridesRed;
         private IMovementStrategy movementStrategy;
         private int level;
-        private Health health;
         private Text levelCounter;
         private bool gameOver;
 		private Text gameOverText;
-        private int loseHealthBuffer;
 
         public Game(WindowArgs windowArgs) : base(windowArgs) {
             eventBus = new GameEventBus();
@@ -68,26 +67,28 @@ namespace Galaga
                 Path.Combine("Assets", "Images", "Explosion.png"));
             movementStrategy = new NoMove();
             level = 1;
-            health = new Health(new Vec2F(0.85f, -0.2f), new Vec2F(0.25f, 0.25f));
             levelCounter = new Text(
                 "Level " + level, new Vec2F(0.5f, -0.2f), new Vec2F(0.25f, 0.25f));
             levelCounter.SetColor(new Vec3I(255,255,255));
             gameOver = false;
 			gameOverText = new Text("GAME OVER", new Vec2F(0.1f,0f), new Vec2F(1f,0.7f));
 			gameOverText.SetColor(new Vec3I(255,255,255));
-            loseHealthBuffer = 0;
+            background = new Background(
+                new Image(Path.Combine("Assets", "Images", "SpaceBackground.png")),
+                new DynamicShape(new Vec2F(0f, 0f), new Vec2F(1f, 1f)));
         }
 
         public override void Render()
         {
             window.Clear();
+            background.Render();
             if (!gameOver) {
                 scoreText.RenderScore();
                 player.Render();
                 enemies.RenderEntities();
                 playerShots.RenderEntities();
                 enemyExplosions.RenderAnimations();
-                health.RenderHealth();
+                player.RenderHealth();
             }
 			if (gameOver) {
 				gameOverText.RenderText();
@@ -95,12 +96,13 @@ namespace Galaga
             levelCounter.RenderText();
         }
 
-        public override void Update()
-        {
+        public override void Update() {
             window.PollEvents();
             eventBus.ProcessEventsSequentially();
             if (!gameOver) {
+                background.Update();
                 player.Move();
+                player.UpdateHealthBuffer();
                 movementStrategy.MoveEnemies(enemies);
                 IterateShots();
                 IterateEnemies();
@@ -150,6 +152,7 @@ namespace Galaga
                     break;
             }
         }
+
         private void KeyRelease(KeyboardKey key) {
             switch (key) {
                 case KeyboardKey.Left:
@@ -190,12 +193,8 @@ namespace Galaga
             }
         }
         private void KeyHandler(KeyboardAction action, KeyboardKey key) {
-            if (action == KeyboardAction.KeyPress) {
-                KeyPress(key);
-            }
-            else {
-                KeyRelease(key);
-            }
+            if (action == KeyboardAction.KeyPress) KeyPress(key);
+            else KeyRelease(key);
         }
         public void ProcessEvent(GameEvent gameEvent) {
             if (gameEvent.EventType == GameEventType.WindowEvent) {
@@ -281,11 +280,10 @@ namespace Galaga
 				case 3:
 					return new CircleFormation();
 				case 4:
-					if (level > 4) {
-						return new HellFormation();
-					} else {
-						return new StandardFormation();
-					}
+					if (level > 4)
+                        return new HellFormation();
+					else
+                        return new StandardFormation();
 				default:
 					return new StandardFormation();
 			}
@@ -297,26 +295,8 @@ namespace Galaga
                 Vec2F playerPosition = player.GetPosition();
                 Vec2F playerExtent = player.GetExtent();
 
-                if ((enemy.Shape.Position.X < playerPosition.X + playerExtent.X/2
-                    && enemy.Shape.Position.X > playerPosition.X - playerExtent.X/2)
-                    && (enemy.Shape.Position.Y < playerPosition.Y + playerExtent.Y/2
-                    && enemy.Shape.Position.Y > playerPosition.Y - playerExtent.Y/2)) {
-
-                    if (loseHealthBuffer == 0) {
-                        health.LoseHealth();
-                        loseHealthBuffer = 10;
-                    }
-                    else {
-                        loseHealthBuffer -= 1;
-                    }
-                    if (health.GetHealth() == 0) {
-                        gameOver = true;
-                    }
-                }
-
-                if (enemy.Shape.Position.Y < 0.05f) {
+                if (player.CollidedWithPlayer(enemy.Shape, true) || enemy.Shape.Position.Y < 0.05f)
                     gameOver = true;
-                }
             });
         }
     }
