@@ -11,6 +11,7 @@ using DIKUArcade.Input;
 using System.Collections.Generic;
 using Galaga.Squadron;
 using Galaga.MovementStrategy;
+using Galaga.GalagaStates;
 
 namespace Galaga
 {
@@ -33,8 +34,11 @@ namespace Galaga
         private Text levelCounter;
         private bool gameOver;
 		private Text gameOverText;
+        private StateMachine stateMachine;
 
         public Game(WindowArgs windowArgs) : base(windowArgs) {
+            stateMachine = new StateMachine();
+            
             eventBus = new GameEventBus();
             eventBus.InitializeEventBus(new List<GameEventType> { GameEventType.InputEvent, GameEventType.WindowEvent });
             eventBus.Subscribe(GameEventType.InputEvent, this);
