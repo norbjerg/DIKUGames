@@ -99,8 +99,8 @@ public class Player : IGameEventProcessor {
 
         public Vec2F GetExtent() => entity.Shape.Extent;
 
-        public void ProcessEvent(GameEvent gameEvent)
-        {
+        public void ProcessEvent(GameEvent gameEvent) {
+
             if (gameEvent.EventType == GameEventType.InputEvent) {
                 switch (gameEvent.Message) {
                     case ("UP PRESS"):
