@@ -16,8 +16,8 @@ namespace Galaga.GalagaStates {
         private void SwitchState(GameStateType stateType) {
             switch (stateType) {
                 case (GameStateType.GamePaused):
-                    ActiveState = GamePaused.GetInstance();   
-                    break;            
+                    ActiveState = GamePaused.GetInstance();
+                    break;
                 case (GameStateType.GameRunning):
                     ActiveState = GameRunning.GetInstance();
                     break;
