@@ -35,6 +35,7 @@ namespace Galaga.GalagaStates {
 
             activeMenuButton = 0;
             maxMenuButtons = menuButtons.Length-1;
+
 			// ".." to get right directory when running tests
             backGroundImage = new Entity(
                 new StationaryShape(new Vec2F(0f, 0f), new Vec2F(1f, 1f)),
