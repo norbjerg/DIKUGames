@@ -21,7 +21,7 @@ namespace GalagaTests {
 		[SetUp]
 		public void Init() {
 			Window.CreateOpenGLContext();
-			eventBus = GalagaBus.GetBus();
+			eventBus = new GameEventBus();
 
 			eventBus.InitializeEventBus(new List<GameEventType> {
 				GameEventType.GameStateEvent,
