@@ -15,7 +15,7 @@ namespace Galaga.GalagaStates {
         private int maxMenuButtons;
         private readonly Vec3I SELECTED_COLOR = new Vec3I(0,230,0);
         private readonly Vec3I UNSELECTED_COLOR = new Vec3I(255,255,255);
-    
+
         public static MainMenu GetInstance() {
             if (MainMenu.instance == null) {
                 MainMenu.instance = new MainMenu();
@@ -35,10 +35,10 @@ namespace Galaga.GalagaStates {
 
             activeMenuButton = 0;
             maxMenuButtons = menuButtons.Length-1;
-
+			// ".." to get right directory when running tests
             backGroundImage = new Entity(
                 new StationaryShape(new Vec2F(0f, 0f), new Vec2F(1f, 1f)),
-                new Image(Path.Combine("Assets", "Images", "TitleImage.png")));
+                new Image(Path.Combine("..", "Galaga", "Assets", "Images", "TitleImage.png")));
         }
 
         public void HandleKeyEvent(KeyboardAction action, KeyboardKey key) {
@@ -47,7 +47,7 @@ namespace Galaga.GalagaStates {
 
                 if (activeMenuButton < 0 || activeMenuButton > maxMenuButtons)
                     return;
-                
+
                 switch (key) {
                     case KeyboardKey.Escape:
                         GalagaBus.GetBus().RegisterEvent(
