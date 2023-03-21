@@ -5,7 +5,7 @@ using DIKUArcade.Math;
 
 namespace Galaga.Squadron;
 
-class DiagonalFormation : ISquadron
+public class DiagonalFormation : ISquadron
 {
     public EntityContainer<Enemy> Enemies { get; }
 

@@ -5,7 +5,7 @@ using DIKUArcade.Math;
 
 namespace Galaga.Squadron;
 
-class HellFormation : ISquadron
+public class HellFormation : ISquadron
 {
     public EntityContainer<Enemy> Enemies { get; }
 
@@ -25,7 +25,7 @@ class HellFormation : ISquadron
                         new Vec2F(0.2f + (float)i * 0.1f, 0.3f + (float)j * 0.1f),
                         new Vec2F(0.1f, 0.1f)),
                     new ImageStride(80, enemyStride),
-                    new ImageStride(80, alternativeEnemyStride))); 
+                    new ImageStride(80, alternativeEnemyStride)));
             }
         }
     }
