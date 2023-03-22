@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using System.Collections.Generic;
 using NUnit.Framework;
@@ -16,11 +17,11 @@ namespace GalagaTests {
 
 		private GameEventBus? eventBus;
 		private StateMachine? stateMachine;
-		private Player? testPlayer;
 		private List<Image>? enemyStridesGreen;
 		private List<Image>? enemyStridesRed;
 		private IMovementStrategy? testStrategy;
 		private Enemy? testEnemy;
+		private EntityContainer<Enemy>? EnemyContainer;
 
 		[SetUp]
 		public void Init() {
@@ -34,12 +35,7 @@ namespace GalagaTests {
 
 			stateMachine = new StateMachine();
 
-			// ".." to get the right directory
-            testPlayer = new Player(
-                new DynamicShape(new Vec2F(0.45f, 0.1f), new Vec2F(0.1f, 0.1f)),
-                new Image(Path.Combine("..", "Galaga", "Assets", "Images", "Player.png")),
-                GalagaBus.GetBus());
-			eventBus.Subscribe(GameEventType.WindowEvent, testPlayer);
+			eventBus.Subscribe(GameEventType.WindowEvent, stateMachine);
 
             enemyStridesGreen = ImageStride.CreateStrides(
                 2, Path.Combine("..", "Galaga", "Assets", "Images", "GreenMonster.png"));
@@ -52,6 +48,13 @@ namespace GalagaTests {
                     new ImageStride(80, enemyStridesGreen),
                     new ImageStride(80, enemyStridesRed));
 			testStrategy = new Down();
+			EnemyContainer = new EntityContainer<Enemy>(2);
+			for (int i = 0; i < 2; i++) {
+				EnemyContainer.AddEntity(new Enemy(
+					new DynamicShape(new Vec2F(0.1f + (float)i * 0.1f, 0.9f), new Vec2F(0.1f, 0.1f)),
+					new ImageStride(80, enemyStridesGreen),
+					new ImageStride(80, enemyStridesRed)));
+			}
 		}
 
 		[Test]
@@ -63,6 +66,19 @@ namespace GalagaTests {
 			float startPos = testEnemy.Shape.Position.Y;
 			testStrategy.MoveEnemy(testEnemy);
 			Assert.AreEqual(startPos-testEnemy.Speed, testEnemy.Shape.Position.Y);
+		}
+
+		[Test]
+		public void TestStrategyMoveEnemies() {
+			if (testStrategy is null || testEnemy is null || EnemyContainer is null) {
+				Assert.Fail();
+				return;
+			}
+			//Rounded because of float inprecision
+			testStrategy.MoveEnemies(EnemyContainer);
+			foreach (Enemy enemy in EnemyContainer) {
+				Assert.AreEqual(MathF.Round(0.9f-testEnemy.Speed,5), MathF.Round(enemy.Shape.Position.Y, 5));
+			}
 		}
 	}
 }

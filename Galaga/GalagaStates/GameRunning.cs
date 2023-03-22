@@ -42,30 +42,30 @@ namespace Galaga.GalagaStates {
             return GameRunning.instance;
         }
 
-        public void InitializeGameState() {  
+        public void InitializeGameState() {
             // Assests
-            playerShotImage = new Image(Path.Combine("Assets", "Images", "BulletRed2.png"));
+            playerShotImage = new Image(Path.Combine("..", "Galaga", "Assets", "Images", "BulletRed2.png"));
             List<Image> images = ImageStride.CreateStrides
-                (4, Path.Combine("Assets", "Images", "BlueMonster.png"));
+                (4, Path.Combine("..", "Galaga", "Assets", "Images", "BlueMonster.png"));
             enemies = new EntityContainer<Enemy>(numEnemies);
             enemyStridesGreen = ImageStride.CreateStrides(
-                2, Path.Combine("Assets", "Images", "GreenMonster.png"));
+                2, Path.Combine("..", "Galaga", "Assets", "Images", "GreenMonster.png"));
             enemyStridesRed = ImageStride.CreateStrides(
-                2, Path.Combine("Assets", "Images", "RedMonster.png"));
+                2, Path.Combine("..", "Galaga", "Assets", "Images", "RedMonster.png"));
             enemyExplosions = new AnimationContainer(numEnemies);
             explosionStrides = ImageStride.CreateStrides(8,
-                Path.Combine("Assets", "Images", "Explosion.png"));   
+                Path.Combine("..", "Galaga", "Assets", "Images", "Explosion.png"));
 
             background = new Background(
-                new Image(Path.Combine("Assets", "Images", "SpaceBackground.png")),
+                new Image(Path.Combine("..", "Galaga", "Assets", "Images", "SpaceBackground.png")),
                 new DynamicShape(new Vec2F(0f, 0f), new Vec2F(1f, 1f)));
 
             scoreText = new Score(new Vec2F(0.05f, -0.2f), new Vec2F(0.25f, 0.25f));
-            
+
             // Entities
             player = new Player(
                 new DynamicShape(new Vec2F(0.45f, 0.1f), new Vec2F(0.1f, 0.1f)),
-                new Image(Path.Combine("Assets", "Images", "Player.png")),
+                new Image(Path.Combine("..", "Galaga", "Assets", "Images", "Player.png")),
                 GalagaBus.GetBus());
             playerShots = new EntityContainer<PlayerShot>();
 

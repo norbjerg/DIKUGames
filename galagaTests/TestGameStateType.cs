@@ -7,7 +7,7 @@ public class GameStateTypeTest {
     public void Setup()
     {
     }
-    
+
     [Test]
     public void TransformStringToStateTest() {
         Assert.AreEqual(GameStateType.GameRunning, StateTransformer.TransformStringToState(
@@ -23,3 +23,4 @@ public class GameStateTypeTest {
         Assert.AreEqual("MAIN_MENU", StateTransformer.TransformStateToString(GameStateType.MainMenu));
     }
 }
+
