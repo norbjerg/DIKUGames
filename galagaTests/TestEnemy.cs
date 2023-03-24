@@ -15,14 +15,17 @@ namespace GalagaTests {
 
 		private GameEventBus? eventBus;
 		private StateMachine? stateMachine;
-		private Player? testPlayer;
 		private List<Image>? enemyStridesGreen;
 		private List<Image>? enemyStridesRed;
 		private Enemy? testEnemy;
 
+		[OneTimeSetUp]
+		public void OTS () {
+			Window.CreateOpenGLContext();
+		}
+
 		[SetUp]
 		public void Init() {
-			Window.CreateOpenGLContext();
 			eventBus = new GameEventBus();
 
 			eventBus.InitializeEventBus(new List<GameEventType> {
@@ -32,12 +35,7 @@ namespace GalagaTests {
 
 			stateMachine = new StateMachine();
 
-			// ".." to get the right directory
-            testPlayer = new Player(
-                new DynamicShape(new Vec2F(0.45f, 0.1f), new Vec2F(0.1f, 0.1f)),
-                new Image(Path.Combine("..", "Galaga", "Assets", "Images", "Player.png")),
-                GalagaBus.GetBus());
-			eventBus.Subscribe(GameEventType.WindowEvent, testPlayer);
+			eventBus.Subscribe(GameEventType.WindowEvent, stateMachine);
 
             enemyStridesGreen = ImageStride.CreateStrides(
                 2, Path.Combine("..", "Galaga", "Assets", "Images", "GreenMonster.png"));
@@ -57,6 +55,7 @@ namespace GalagaTests {
 				Assert.Fail();
 				return;
 			}
+			// We test if getShot reduces hp, also that it returns false when it's not dead
 			int startHP = testEnemy.hitpoints;
 			testEnemy.getShot();
 			Assert.AreEqual(startHP-1, testEnemy.hitpoints);
@@ -69,6 +68,7 @@ namespace GalagaTests {
 				Assert.Fail();
 				return;
 			}
+			// Health is reduced to 0 loop, then test if getShot returns true, meaning death
 			for (int i = 0; i < 3; i++) {
 				testEnemy.getShot();
 			}
@@ -84,6 +84,7 @@ namespace GalagaTests {
 			float startSpd = testEnemy.Speed;
 			testEnemy.getShot();
 			testEnemy.getShot();
+			// When enraged, the speed is incremented by "Speed * 2". Therefore we check if that is the case
 			Assert.AreEqual(startSpd + startSpd * 2, testEnemy.Speed);
 		}
 	}

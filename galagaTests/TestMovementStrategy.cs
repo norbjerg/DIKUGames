@@ -23,9 +23,13 @@ namespace GalagaTests {
 		private Enemy? testEnemy;
 		private EntityContainer<Enemy>? EnemyContainer;
 
+		[OneTimeSetUp]
+		public void OTS () {
+			Window.CreateOpenGLContext();
+		}
+
 		[SetUp]
 		public void Init() {
-			Window.CreateOpenGLContext();
 			eventBus = new GameEventBus();
 
 			eventBus.InitializeEventBus(new List<GameEventType> {
@@ -65,6 +69,7 @@ namespace GalagaTests {
 			}
 			float startPos = testEnemy.Shape.Position.Y;
 			testStrategy.MoveEnemy(testEnemy);
+			// We expect the enemy to be moved down equivilent to its speed.
 			Assert.AreEqual(startPos-testEnemy.Speed, testEnemy.Shape.Position.Y);
 		}
 

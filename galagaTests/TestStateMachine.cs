@@ -10,9 +10,13 @@ namespace GalagaTests {
 		private GameEventBus? eventBus;
 		private StateMachine? stateMachine;
 
+		[OneTimeSetUp]
+		public void OTS () {
+			Window.CreateOpenGLContext();
+		}
+
 		[SetUp]
 		public void InitiateStateMachine() {
-			Window.CreateOpenGLContext();
 			eventBus = new GameEventBus();
 
 			eventBus.InitializeEventBus(new List<GameEventType> {

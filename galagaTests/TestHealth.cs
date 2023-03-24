@@ -1,8 +1,5 @@
-using System.IO;
 using System.Collections.Generic;
 using NUnit.Framework;
-using DIKUArcade.Entities;
-using DIKUArcade.Graphics;
 using DIKUArcade.Math;
 using DIKUArcade.Events;
 using DIKUArcade.GUI;
@@ -16,27 +13,24 @@ namespace GalagaTests {
 		private GameEventBus? eventBus;
 		private StateMachine? stateMachine;
 		private Health? testHealth;
-		private Player? subscribePlayer;
+
+		[OneTimeSetUp]
+		public void OTS() {
+			Window.CreateOpenGLContext();
+		}
 
 		[SetUp]
 		public void Init() {
-			Window.CreateOpenGLContext();
 			eventBus = new GameEventBus();
 
-			eventBus.InitializeEventBus(new List<GameEventType> {
-				GameEventType.GameStateEvent,
+			eventBus.InitializeEventBus(new List<GameEventType> { GameEventType.GameStateEvent,
 				GameEventType.InputEvent,
 				GameEventType.WindowEvent });
 
 			stateMachine = new StateMachine();
 
-			// ".." to get the right directory
-            subscribePlayer = new Player(
-                new DynamicShape(new Vec2F(0.45f, 0.1f), new Vec2F(0.1f, 0.1f)),
-                new Image(Path.Combine("..", "Galaga", "Assets", "Images", "Player.png")),
-                GalagaBus.GetBus());
+			eventBus.Subscribe(GameEventType.WindowEvent, stateMachine);
             testHealth = new Health(new Vec2F(0.85f, -0.2f), new Vec2F(0.25f, 0.25f));
-			eventBus.Subscribe(GameEventType.WindowEvent, subscribePlayer);
 		}
 
 		[Test]

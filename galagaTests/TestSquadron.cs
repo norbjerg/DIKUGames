@@ -1,9 +1,7 @@
 using System.IO;
 using System.Collections.Generic;
 using NUnit.Framework;
-using DIKUArcade.Entities;
 using DIKUArcade.Graphics;
-using DIKUArcade.Math;
 using DIKUArcade.Events;
 using DIKUArcade.GUI;
 using Galaga.GalagaStates;
@@ -16,7 +14,6 @@ namespace GalagaTests {
 
 		private GameEventBus? eventBus;
 		private StateMachine? stateMachine;
-		private Player? testPlayer;
 		private List<Image>? enemyStridesGreen;
 		private List<Image>? enemyStridesRed;
 		private ISquadron? testStandardSquadron;
@@ -24,9 +21,13 @@ namespace GalagaTests {
 		private ISquadron? testCircleSquadron;
 		private ISquadron? testHellSquadron;
 
+		[OneTimeSetUp]
+		public void OTS () {
+			Window.CreateOpenGLContext();
+		}
+
 		[SetUp]
 		public void Init() {
-			Window.CreateOpenGLContext();
 			eventBus = new GameEventBus();
 
 			eventBus.InitializeEventBus(new List<GameEventType> {
@@ -36,12 +37,7 @@ namespace GalagaTests {
 
 			stateMachine = new StateMachine();
 
-			// ".." to get the right directory
-            testPlayer = new Player(
-                new DynamicShape(new Vec2F(0.45f, 0.1f), new Vec2F(0.1f, 0.1f)),
-                new Image(Path.Combine("..", "Galaga", "Assets", "Images", "Player.png")),
-                GalagaBus.GetBus());
-			eventBus.Subscribe(GameEventType.WindowEvent, testPlayer);
+			eventBus.Subscribe(GameEventType.WindowEvent, stateMachine);
 
             enemyStridesGreen = ImageStride.CreateStrides(
                 2, Path.Combine("..", "Galaga", "Assets", "Images", "GreenMonster.png"));
@@ -62,11 +58,15 @@ namespace GalagaTests {
 			foreach (Enemy enemy in testStandardSquadron.Enemies) {
 				Assert.False(enemy is Enemy);
 			}
+			var iter = 0;
 			testStandardSquadron.CreateEnemies(enemyStridesGreen, enemyStridesRed);
 			foreach (Enemy enemy in testStandardSquadron.Enemies) {
 				Assert.True(enemy is Enemy);
+				Assert.AreEqual(0.1f + (float) iter * 0.1f, enemy.Shape.Position.X);
+				iter++;
 			}
 		}
+
 
 		[Test]
 		public void TestDiagonalSquadron() {
@@ -77,9 +77,13 @@ namespace GalagaTests {
 			foreach (Enemy enemy in testDiagonalSquadron.Enemies) {
 				Assert.False(enemy is Enemy);
 			}
+			var iter = 0;
 			testDiagonalSquadron.CreateEnemies(enemyStridesGreen, enemyStridesRed);
 			foreach (Enemy enemy in testDiagonalSquadron.Enemies) {
 				Assert.True(enemy is Enemy);
+				Assert.AreEqual(0.2f + (float)iter * 0.1f, enemy.Shape.Position.X);
+				Assert.AreEqual(0.3f + (float)iter * 0.1f, enemy.Shape.Position.Y);
+				iter++;
 			}
 		}
 

@@ -18,9 +18,13 @@ namespace GalagaTests {
 		private StateMachine? stateMachine;
 		private Player? testPlayer;
 
+		[OneTimeSetUp]
+		public void OTS () {
+			Window.CreateOpenGLContext();
+		}
+
 		[SetUp]
 		public void Init() {
-			Window.CreateOpenGLContext();
 			eventBus = new GameEventBus();
 
 			eventBus.InitializeEventBus(new List<GameEventType> {
@@ -30,12 +34,13 @@ namespace GalagaTests {
 
 			stateMachine = new StateMachine();
 
+			eventBus.Subscribe(GameEventType.WindowEvent, stateMachine);
+
 			// ".." to get the right directory
             testPlayer = new Player(
                 new DynamicShape(new Vec2F(0.45f, 0.1f), new Vec2F(0.1f, 0.1f)),
                 new Image(Path.Combine("..", "Galaga", "Assets", "Images", "Player.png")),
                 GalagaBus.GetBus());
-			eventBus.Subscribe(GameEventType.WindowEvent, testPlayer);
 		}
 
 		[Test]
@@ -185,6 +190,8 @@ namespace GalagaTests {
 				return;
 			}
 			var startPos = testPlayer.GetPosition();
+			// The plane starts in 0.5. The speed is 0.01. Plane is moved 100 times in loop 100 * 0.01 = 1.
+			// Meaning it should be out of bound
 			for (int i = 0; i < 100; i++) {
 				testPlayer.ProcessEvent(
 						new GameEvent{
