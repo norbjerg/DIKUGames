@@ -7,7 +7,7 @@ using DIKUArcade.State;
 namespace Galaga.GalagaStates;
 public class GamePaused : IGameState {
     private static GamePaused instance = null;
-    private Text[] Buttons;
+    private Text[] buttons;
     private int activeButton;
     private int maxButtons;
     private readonly Vec3I SELECTED_COLOR = new Vec3I(0,230,0);
@@ -22,23 +22,23 @@ public class GamePaused : IGameState {
     }
 
     public void InitializeGameState() {
-        Buttons = new Text[] {
+        buttons = new Text[] {
             new Text("Return to game", new Vec2F(0.1f, 0.4f), new Vec2F(0.25f, 0.25f)),
             new Text("Quit to menu", new Vec2F(0.1f, 0.5f), new Vec2F(0.25f, 0.25f)),
             new Text("Quit application", new Vec2F(0.1f, 0.6f), new Vec2F(0.25f, 0.25f))};
 
-        foreach (Text button in Buttons)
+        foreach (Text button in buttons)
             button.SetColor(UNSELECTED_COLOR);
         this.updateButton(true);
 
         activeButton = 0;
-        maxButtons = Buttons.Length-1;
+        maxButtons = buttons.Length-1;
     }
 
     
     private void updateButton(bool active) {
-        if (active) Buttons[activeButton].SetColor(SELECTED_COLOR);
-        else Buttons[activeButton].SetColor(UNSELECTED_COLOR);
+        if (active) buttons[activeButton].SetColor(SELECTED_COLOR);
+        else buttons[activeButton].SetColor(UNSELECTED_COLOR);
     }
 
 
@@ -98,7 +98,7 @@ public class GamePaused : IGameState {
     }
 
     public void RenderState() {
-        foreach (Text button in Buttons){
+        foreach (Text button in buttons){
             button.RenderText();
         }
     }

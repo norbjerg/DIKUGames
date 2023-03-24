@@ -19,7 +19,7 @@ namespace Galaga.GalagaStates {
         private EntityContainer<PlayerShot> playerShots;
         private IBaseImage playerShotImage;
         private EntityContainer<Enemy> enemies;
-        private const int numEnemies = 8;
+        private const int NUM_ENEMIES = 8;
         private IMovementStrategy movementStrategy;
         private List<Image> explosionStrides;
         private const int EXPLOSION_LENGTH_MS = 500;
@@ -47,12 +47,12 @@ namespace Galaga.GalagaStates {
             playerShotImage = new Image(Path.Combine("..", "Galaga", "Assets", "Images", "BulletRed2.png"));
             List<Image> images = ImageStride.CreateStrides
                 (4, Path.Combine("..", "Galaga", "Assets", "Images", "BlueMonster.png"));
-            enemies = new EntityContainer<Enemy>(numEnemies);
+            enemies = new EntityContainer<Enemy>(NUM_ENEMIES);
             enemyStridesGreen = ImageStride.CreateStrides(
                 2, Path.Combine("..", "Galaga", "Assets", "Images", "GreenMonster.png"));
             enemyStridesRed = ImageStride.CreateStrides(
                 2, Path.Combine("..", "Galaga", "Assets", "Images", "RedMonster.png"));
-            enemyExplosions = new AnimationContainer(numEnemies);
+            enemyExplosions = new AnimationContainer(NUM_ENEMIES);
             explosionStrides = ImageStride.CreateStrides(8,
                 Path.Combine("..", "Galaga", "Assets", "Images", "Explosion.png"));
 
@@ -69,7 +69,7 @@ namespace Galaga.GalagaStates {
                 GalagaBus.GetBus());
             playerShots = new EntityContainer<PlayerShot>();
 
-            for (int i = 0; i < numEnemies; i++) {
+            for (int i = 0; i < NUM_ENEMIES; i++) {
                 enemies.AddEntity(new Enemy(
                     new DynamicShape(new Vec2F(0.1f + (float)i * 0.1f, 0.9f), new Vec2F(0.1f, 0.1f)),
                     new ImageStride(80, enemyStridesGreen),
@@ -150,8 +150,6 @@ namespace Galaga.GalagaStates {
             GalagaBus.GetBus().RegisterEvent(
                     new GameEvent{
                         EventType = GameEventType.InputEvent,
-                        From = this,
-                        To = player,
                         Message = message
                     }
                 );

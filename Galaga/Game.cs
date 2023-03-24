@@ -13,15 +13,14 @@ public class Game : DIKUGame, IGameEventProcessor {
 
     public Game(WindowArgs windowArgs) : base(windowArgs) {
         eventBus = GalagaBus.GetBus();
-
         eventBus.InitializeEventBus(new List<GameEventType> {
             GameEventType.GameStateEvent,
             GameEventType.InputEvent,
             GameEventType.WindowEvent });
+        eventBus.Subscribe(GameEventType.WindowEvent, this);
 
         stateMachine = new StateMachine();
-
-        eventBus.Subscribe(GameEventType.WindowEvent, this);
+        
         window.SetKeyEventHandler(KeyHandler);
     }
 
