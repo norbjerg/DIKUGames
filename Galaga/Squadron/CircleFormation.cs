@@ -5,7 +5,7 @@ using DIKUArcade.Math;
 
 namespace Galaga.Squadron;
 
-class CircleFormation : ISquadron
+public class CircleFormation : ISquadron
 {
     public EntityContainer<Enemy> Enemies { get; }
 
@@ -29,7 +29,7 @@ class CircleFormation : ISquadron
                             i * 2f * (float) System.Math.PI / MaxEnemies)),
                     new Vec2F(0.1f, 0.1f)),
                 new ImageStride(80, enemyStride),
-                new ImageStride(80, alternativeEnemyStride))); 
+                new ImageStride(80, alternativeEnemyStride)));
         }
     }
 }

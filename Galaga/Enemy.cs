@@ -3,7 +3,7 @@ using DIKUArcade.Graphics;
 namespace Galaga;
 public class Enemy : Entity {
 
-    private int hitpoints;
+    public int hitpoints {get; private set; }
     public float Speed { get; private set; }
     private IBaseImage enemyStrideRed;
     public float X0 { get; }

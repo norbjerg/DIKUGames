@@ -14,8 +14,8 @@ namespace Galaga {
             scoreText.SetColor(new Vec3I(255,255,255));
         }
 
-        public void IncrementScore(){
-            scoreCount += 1;
+        public void IncrementScore(int amount){
+            scoreCount += amount;
             scoreText.SetText($"Score: {scoreCount}");
         }
 

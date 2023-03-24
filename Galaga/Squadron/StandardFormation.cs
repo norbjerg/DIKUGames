@@ -5,7 +5,7 @@ using DIKUArcade.Math;
 
 namespace Galaga.Squadron;
 
-class StandardFormation : ISquadron
+public class StandardFormation : ISquadron
 {
     public EntityContainer<Enemy> Enemies { get; }
 
