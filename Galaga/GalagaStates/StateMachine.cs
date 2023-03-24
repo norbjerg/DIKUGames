@@ -1,6 +1,4 @@
-using System.Collections.Generic;
 using DIKUArcade.Events;
-using DIKUArcade.Events.Generic;
 using DIKUArcade.State;
 namespace Galaga.GalagaStates {
     public class StateMachine : IGameEventProcessor {
@@ -9,8 +7,8 @@ namespace Galaga.GalagaStates {
                 
             GalagaBus.GetBus().Subscribe(GameEventType.GameStateEvent, this);
             // GalagaBus.GetBus().Subscribe(GameEventType.InputEvent, this);
-            // Fjernede subscription^^ fra inputevent til denne klasse,
-            // da det umiddelbart ikke er den der skal være ansvarlig for InoutEvent
+            // Removed subscription^^ from InputEvent to this class because it does not use it
+            // The subscription is moved to the 'Player' class
             ActiveState = MainMenu.GetInstance();
         }
         private void SwitchState(GameStateType stateType) {

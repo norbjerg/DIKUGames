@@ -8,25 +8,22 @@ namespace Galaga {
 public class Player : IGameEventProcessor {
         private Entity entity;
         private DynamicShape shape;
-        private float moveLeft;
-        private float moveRight;
-		private float moveUp;
-		private float moveDown;
+        private float moveLeft, moveRight, moveUp, moveDown;
         private Health health;
         private const float MOVEMENT_SPEED = 0.01f;
         private GameEventBus eventBus;
 
 
         public Player(DynamicShape shape, IBaseImage image, GameEventBus eventBus) {
-            entity = new Entity(shape, image);
             this.shape = shape;
+            entity = new Entity(shape, image);
+            health = new Health(new Vec2F(0.85f, -0.2f), new Vec2F(0.25f, 0.25f));
             moveLeft = 0.0f;
             moveRight = 0.0f;
 			moveUp = 0.0f;
 			moveDown = 0.0f;
-            health = new Health(new Vec2F(0.85f, -0.2f), new Vec2F(0.25f, 0.25f));
-            
             this.eventBus = eventBus;
+            eventBus.Subscribe(GameEventType.InputEvent, this);
         }
 
         public void Render() {
@@ -100,34 +97,31 @@ public class Player : IGameEventProcessor {
         public Vec2F GetExtent() => entity.Shape.Extent;
 
         public void ProcessEvent(GameEvent gameEvent) {
-
-            if (gameEvent.EventType == GameEventType.InputEvent) {
-                switch (gameEvent.Message) {
-                    case ("UP PRESS"):
-                        SetMoveUp(true);
-                        break;
-                    case ("DOWN PRESS"):
-                        SetMoveDown(true);
-                        break;
-                    case ("LEFT PRESS"):
-                        SetMoveLeft(true);
-                        break;
-                    case ("RIGHT PRESS"):
-                        SetMoveRight(true);
-                        break;
-                    case ("UP RELEASE"):
-                        SetMoveUp(false);
-                        break;
-                    case ("DOWN RELEASE"):
-                        SetMoveDown(false);
-                        break;
-                    case ("LEFT RELEASE"):
-                        SetMoveLeft(false);
-                        break;
-                    case ("RIGHT RELEASE"):
-                        SetMoveRight(false);
-                        break;
-                }
+            switch (gameEvent.Message) {
+                case ("UP PRESS"):
+                    SetMoveUp(true);
+                    break;
+                case ("DOWN PRESS"):
+                    SetMoveDown(true);
+                    break;
+                case ("LEFT PRESS"):
+                    SetMoveLeft(true);
+                    break;
+                case ("RIGHT PRESS"):
+                    SetMoveRight(true);
+                    break;
+                case ("UP RELEASE"):
+                    SetMoveUp(false);
+                    break;
+                case ("DOWN RELEASE"):
+                    SetMoveDown(false);
+                    break;
+                case ("LEFT RELEASE"):
+                    SetMoveLeft(false);
+                    break;
+                case ("RIGHT RELEASE"):
+                    SetMoveRight(false);
+                    break;
             }
         }
 
