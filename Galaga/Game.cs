@@ -41,7 +41,6 @@ public class Game : DIKUGame, IGameEventProcessor {
     }
 
     public void ProcessEvent(GameEvent gameEvent) {
-        // Lige nu er denne case 100% af tilfældende, derfor kan den evt. reduceres
         if (gameEvent.EventType == GameEventType.WindowEvent) {
             if (gameEvent.Message == "QUIT_GAME"){
                 window.CloseWindow();

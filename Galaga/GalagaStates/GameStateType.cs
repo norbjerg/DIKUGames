@@ -7,7 +7,7 @@ public enum GameStateType {
     MainMenu
 }
 
-public class StateTransformer { //<-- måske bare lave den static
+public class StateTransformer {
     public static GameStateType TransformStringToState(string state) => state switch {
         "GAME_RUNNING" => GameStateType.GameRunning,
         "GAME_PAUSED" => GameStateType.GamePaused,

@@ -7,9 +7,8 @@ namespace Galaga.GalagaStates {
                 
             GalagaBus.GetBus().Subscribe(GameEventType.GameStateEvent, this);
             // GalagaBus.GetBus().Subscribe(GameEventType.InputEvent, this);
-            // Fjernede subscription^^ fra inputevent til denne klasse,
-            // da det umiddelbart ikke er den, der skal være ansvarlig for InputEvent IMO
-            // Den subscription er rykket til Player
+            // Removed subscription^^ from InputEvent too this class because it does not use it
+            // The subsription is moved to the 'Player' class
             ActiveState = MainMenu.GetInstance();
         }
         private void SwitchState(GameStateType stateType) {
